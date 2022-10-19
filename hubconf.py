@@ -28,7 +28,9 @@ class Cs19b003NN(nn.Module):
             nn.Linear(512, 512),
             nn.ReLU(),
             nn.Linear(512, 10)
+            
         )
+        self.softmax = torch.nn.Softmax()
 
     def forward(self, x):
         x = self.flatten(x)
@@ -37,7 +39,7 @@ class Cs19b003NN(nn.Module):
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model(train_data_loader=None, n_epochs=10):
-  model = None
+  # model = None
 
   # write your code here as per instructions
   # ... your code ...
@@ -46,8 +48,8 @@ def get_model(train_data_loader=None, n_epochs=10):
   # Use softmax and cross entropy loss functions
   # set model variable to proper object, make use of train_data
   model = Cs19b003NN().to(device)
-    
-  print ('Returning model... (rollnumber: cs03)')
+  
+  print ('Returning model... (rollnumber: cs03)', model)
   
   return model
 
@@ -71,7 +73,6 @@ def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
   
   # HINT: You can print sizes of tensors to get an idea of the size of the fc layer required
   # HINT: Flatten function can also be used if required
-  return model
   
   
   print ('Returning model... (rollnumber: cs03)')
@@ -87,6 +88,7 @@ def test_model(model1=None, test_data_loader=None):
   # ... your code ...
   # ... and so on ...
   # calculate accuracy, precision, recall and f1score
+  print(test_data_loader)
   size = len(test_data_loader.dataset)
   num_batches = len(test_data_loader)
   model1.eval()
