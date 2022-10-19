@@ -53,7 +53,7 @@ def get_model(train_data_loader=None, n_epochs=10):
   # ... and so on ...
   # Use softmax and cross entropy loss functions
   # set model variable to proper object, make use of train_data
-  X, y = test_data_loader[0]
+  X, y = train_data_loader[0]
   print("X and y shape", X.shape, y.shape)
   m=X.shape[0]
   n=X.shape[1]
