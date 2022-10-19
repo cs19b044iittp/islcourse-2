@@ -107,5 +107,3 @@ def test_model(model1=None, test_data_loader=None):
   
   
   return accuracy_val, precision_val, recall_val, f1score_val
-
-test_model()
