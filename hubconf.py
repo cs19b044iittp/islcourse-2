@@ -89,13 +89,13 @@ def test_model(model1=None, test_data_loader=None):
   # calculate accuracy, precision, recall and f1score
   size = len(test_data_loader.dataset)
   num_batches = len(test_data_loader)
-  model.eval()
+  model1.eval()
   test_loss, correct = 0, 0
   
   with torch.no_grad():
       for X, y in test_data_loader:
           X, y = X.to(device), y.to(device)
-          pred = model(X)
+          pred = model1(X)
           test_loss += loss_fn(pred, y).item()
           correct += (pred.argmax(1) == y).type(torch.float).sum().item()
   test_loss /= num_batches
@@ -105,3 +105,5 @@ def test_model(model1=None, test_data_loader=None):
   
   
   return accuracy_val, precision_val, recall_val, f1score_val
+
+test_model()
