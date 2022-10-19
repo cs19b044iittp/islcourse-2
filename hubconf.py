@@ -16,7 +16,7 @@ class Cs19b003NN(nn.Module):
   # ... your code ...
   # ... write init and forward functions appropriately ...
     def __init__(self):
-        super(NeuralNetwork, self).__init__()
+        super(Cs19b003NN, self).__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(28*28, 512),
