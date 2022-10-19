@@ -28,8 +28,9 @@ class Cs19b003NN(nn.Module):
         self.m = m
         self.n=n
         self.pic_len=pic_len
+        print("lens:", m, n, pic_len)
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear( pic_len, m*n),
+            nn.Linear( 64*64, pic_len),
             nn.ReLU(),
             nn.Linear(pic_len, 512),
             nn.ReLU(),
