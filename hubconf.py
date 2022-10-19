@@ -15,6 +15,9 @@ print(f"Using {device} device")
 loss_fn = nn.CrossEntropyLoss()
 # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
+m=28
+n=28
+pic_len=625
 class Cs19b003NN(nn.Module):
   # pass
   # ... your code ...
@@ -22,10 +25,11 @@ class Cs19b003NN(nn.Module):
     def __init__(self):
         super(Cs19b003NN, self).__init__()
         self.flatten = nn.Flatten()
+        
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28*28, 512),
+            nn.Linear(m*n, pic_len),
             nn.ReLU(),
-            nn.Linear(512, 512),
+            nn.Linear(pic_len, 512),
             nn.ReLU(),
             nn.Linear(512, 10)
             
@@ -88,15 +92,20 @@ def test_model(model1=None, test_data_loader=None):
   # ... your code ...
   # ... and so on ...
   # calculate accuracy, precision, recall and f1score
-  print(test_data_loader)
   size = len(test_data_loader.dataset)
   num_batches = len(test_data_loader)
+  print("test_data_loader size:", size, " num batch", num_batches)
+  
   model1.eval()
   test_loss, correct = 0, 0
   
   with torch.no_grad():
       for X, y in test_data_loader:
           X, y = X.to(device), y.to(device)
+          print("X and y shape", X.shape, y.shape)
+          m=X.shape[0]
+          n=X.shape[1]
+          pic_len = size
           pred = model1(X)
           test_loss += loss_fn(pred, y).item()
           correct += (pred.argmax(1) == y).type(torch.float).sum().item()
