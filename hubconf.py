@@ -15,17 +15,19 @@ print(f"Using {device} device")
 loss_fn = nn.CrossEntropyLoss()
 # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-m=28
-n=28
-pic_len=625
+m1=8
+n1=8
+pic_len1=625
 class Cs19b003NN(nn.Module):
   # pass
   # ... your code ...
   # ... write init and forward functions appropriately ...
-    def __init__(self):
-        super(Cs19b003NN, self).__init__()
+    def __init__(self, m, n, pic_len):
+        super(Cs19b003NN, self).__init__(m,n,pic_len)
         self.flatten = nn.Flatten()
-        
+        self.m = m
+        self.n=n
+        self.pic_len=pic_len
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(m*n, pic_len),
             nn.ReLU(),
@@ -51,7 +53,12 @@ def get_model(train_data_loader=None, n_epochs=10):
   # ... and so on ...
   # Use softmax and cross entropy loss functions
   # set model variable to proper object, make use of train_data
-  model = Cs19b003NN().to(device)
+  X, y = test_data_loader[0]
+  print("X and y shape", X.shape, y.shape)
+  m=X.shape[0]
+  n=X.shape[1]
+  pic_len = X.shape[2]*X.shape[3]
+  model = Cs19b003NN(m, n, pic_len).to(device)
   
   print ('Returning model... (rollnumber: cs03)', model)
   
@@ -103,9 +110,7 @@ def test_model(model1=None, test_data_loader=None):
       for X, y in test_data_loader:
           X, y = X.to(device), y.to(device)
           print("X and y shape", X.shape, y.shape)
-          m=X.shape[0]
-          n=X.shape[1]
-          pic_len = size
+          
           pred = model1(X)
           test_loss += loss_fn(pred, y).item()
           correct += (pred.argmax(1) == y).type(torch.float).sum().item()
