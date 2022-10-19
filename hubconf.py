@@ -23,7 +23,7 @@ class Cs19b003NN(nn.Module):
   # ... your code ...
   # ... write init and forward functions appropriately ...
     def __init__(self, m, n, pic_len):
-        super(Cs19b003NN, self).__init__(m,n,pic_len)
+        super(Cs19b003NN, self).__init__()
         self.flatten = nn.Flatten()
         self.m = m
         self.n=n
