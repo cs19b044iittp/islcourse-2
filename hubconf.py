@@ -18,6 +18,8 @@ loss_fn = nn.CrossEntropyLoss()
 m1=8
 n1=8
 pic_len1=625
+
+loss_function = nn.CrossEntropyLoss()
 class Cs19b003NN(nn.Module):
   # pass
   # ... your code ...
@@ -43,7 +45,7 @@ class Cs19b003NN(nn.Module):
         x = self.flatten(x)
         logits = self.linear_relu_stack(x)
         return logits
-    
+
 def train(dataloader, model, optimizer):
     size = len(dataloader.dataset)
     model.train()
