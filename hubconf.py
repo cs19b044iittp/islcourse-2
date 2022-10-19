@@ -64,6 +64,10 @@ def get_model(train_data_loader=None, n_epochs=10):
       break
   model = Cs19b003NN(m, n, pic_len).to(device)
   
+  for t in range(n_epochs):
+        print(f"Epoch {t+1}\n-------------------------------")
+        train(train_data_loader, model, optimizer)
+  
   print ('Returning model... (rollnumber: cs03)', model)
   
   return model
