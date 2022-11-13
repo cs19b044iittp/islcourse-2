@@ -223,6 +223,12 @@ def get_model(train_loader=None,e = 10,lr=1e-4,config_param=None):
 	return model
 
 # test the model in hubconf
+
+# test the model in hubconf
 def test_model(model1, test_data_loader):
-	a,p,r,f1 = test(test_data_loader, model1, loss_fun)
-	return a,p,r,f1
+  a,p,r,f1 = test(test_data_loader, model1, loss_fun)
+  a=a.to(device)
+  p=p.to(device)
+  r=r.to(device)
+  f1=f1.to(device)
+  return a,p,r,f1
