@@ -173,7 +173,7 @@ loss_val = loss_fun(y_pred, y_ground)
 print(loss_val)
 
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-train_network(train_loader,optimizer,loss_fun,10)
+# train_network(train_loader,optimizer,loss_fun,10)
 
 # testing the model
 def test(dataloader, model, loss_fn):
@@ -208,21 +208,19 @@ def test(dataloader, model, loss_fn):
     f1_score = f1_score.to(device)
     print('f1_score :', f1_score(pred,y))
 
-    return accuracy1, precision, recall, f1_score
+    return accuracy1(pred,y), precision(pred,y), recall(pred,y), f1_score(pred,y)
 
-test(test_loader, model, loss_fun)
+# test(test_loader, model, loss_fun)
 
 #write the get model
-def get_model(train_loader=None,e = 10,lr=1e-4,config_param=None):
-	model = cs19b003(config_param)
-	model=model.to(device)
+def get_model(train_loader,e,lr,config_param=None):
+  model = cs19b003(config_param)
+  model=model.to(device)
+  optimizer = optim.SGD(model.parameters(), lr, momentum=0.9)
 
-	optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-	criteria = loss_fun
-	train_network(train_loader, optimizer,criteria,e)
-	return model
-
-# test the model in hubconf
+  criteria = loss_fun
+  train_network(train_loader, optimizer, criteria, e)
+  return model
 
 # test the model in hubconf
 def test_model(model1, test_data_loader):
