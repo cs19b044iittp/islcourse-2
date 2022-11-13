@@ -11,6 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix, precision_score,recall_score, precision_recall_fscore_support
+!pip install torchmetrics
 from torchmetrics import Precision, Recall, F1Score, Accuracy
 from torchmetrics.classification import accuracy
 
@@ -207,13 +208,20 @@ def test(dataloader, model, loss_fn):
     f1_score = F1Score(average = 'macro', num_classes = 10)
     f1_score = f1_score.to(device)
     print('f1_score :', f1_score(pred,y))
-    return accuracy1,precision, recall, f1_score
+
+    return accuracy1, precision, recall, f1_score
 
 test(test_loader, model, loss_fun)
+
 #write the get model
-def get_model(train_loader,e = 10):
+def get_model(train_loader=None,e = 10,lr=1e-4,config_param=None):
 	model = cs19b003(config_param)
 	optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 	criteria = loss_fun
 	train_network(train_loader, optimizer,criteria,e)
 	return model
+
+# test the model in hubconf
+def test_model(model1, test_data_loader):
+	a,p,r,f1 = test(test_data_loader, model1, loss_fun)
+	return a,p,r,f1
