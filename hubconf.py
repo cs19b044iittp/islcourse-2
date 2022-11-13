@@ -86,7 +86,7 @@ class cs19b003(nn.Module):
         # w = (w - k + p + 1)/2
         new_w = (new_w - self.config_param[i+1][2][0] + 1)/self.config_param[i+1][3]
         new_h = (new_h - self.config_param[i+1][2][1] + 1)/self.config_param[i+1][3]
-      size = int(self.config_param[self.conv_layers][1] * new_w * new_h)
+      size = int(self.config_param[conv_layers][1] * new_w * new_h)
       return size
 
 #train the network
