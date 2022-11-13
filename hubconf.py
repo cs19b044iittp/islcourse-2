@@ -11,7 +11,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix, precision_score,recall_score, precision_recall_fscore_support
-!pip install torchmetrics
 from torchmetrics import Precision, Recall, F1Score, Accuracy
 from torchmetrics.classification import accuracy
 
