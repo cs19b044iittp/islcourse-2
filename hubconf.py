@@ -78,14 +78,15 @@ class cs19b003(nn.Module):
         x = self.m(x)
         return x
 
-    def fc_nodes_calc(self, config_param):
-      new_w = config_param[0][1]
-      new_h = config_param[0][2]
+    def fc_nodes_calc(self):
+      new_w = self.config_param[0][1]
+      new_h = self.config_param[0][2]   
+      conv_layers = self.config_param[0][3]
       for i in range(conv_layers):
         # w = (w - k + p + 1)/2
-        new_w = (new_w - config_param[i+1][2][0] + 1)/config_param[i+1][3]
-        new_h = (new_h - config_param[i+1][2][1] + 1)/config_param[i+1][3]
-      size = int(config_param[conv_layers][1] * new_w * new_h)
+        new_w = (new_w - self.config_param[i+1][2][0] + 1)/self.config_param[i+1][3]
+        new_h = (new_h - self.config_param[i+1][2][1] + 1)/self.config_param[i+1][3]
+      size = int(self.config_param[self.conv_layers][1] * new_w * new_h)
       return size
 
 #train the network
