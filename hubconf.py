@@ -14,8 +14,6 @@ from sklearn.metrics import classification_report, confusion_matrix, precision_s
 from torchmetrics import Precision, Recall, F1Score, Accuracy
 from torchmetrics.classification import accuracy
 
-transform_tensor_to_pil = ToPILImage()
-transform_pil_to_tensor = ToTensor()
 
 def load_data():
     # Download training data from open datasets.
@@ -35,7 +33,6 @@ def load_data():
     )
     return training_data, test_data
 
-training_data, test_data = load_data()
 def create_dataloaders(training_data, test_data, batch_size=64):
 
     # Create data loaders.
@@ -49,22 +46,12 @@ def create_dataloaders(training_data, test_data, batch_size=64):
         
     return train_dataloader, test_dataloader
 
-# configs 
-num_classes = len(set([y for x,y in training_data]))
-dim, width, height = training_data[0][0].shape
-conv_layers=2
-config_param=[[dim, width, height, conv_layers, num_classes],
-              [dim, 32, (5,5), 1, 'valid'],
-              [ 32, 64, (5,5), 1, 'valid']]
-
-print ("num classes:", num_classes)
-print("config: ", config_param)
-
-train_loader, test_loader = create_dataloaders(training_data, test_data, batch_size = 32)
 
 class cs19b003(nn.Module):
     def __init__(self, config_param):
         super().__init__()
+        self.config_param = config_param
+        
         self.conv1 = nn.Conv2d(in_channels=config_param[1][0], 
                                out_channels=config_param[1][1], 
                                kernel_size=config_param[1][2], 
@@ -78,7 +65,7 @@ class cs19b003(nn.Module):
         self.relu1 = nn.ReLU()
         self.relu2 = nn.ReLU()
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(in_features=self.fc_nodes_calc(), out_features=num_classes)
+        self.fc1 = nn.Linear(in_features=self.fc_nodes_calc(), out_features=config_param[0][4])
         self.m = nn.Softmax(dim =1)
 
     def forward(self, x):
@@ -91,7 +78,7 @@ class cs19b003(nn.Module):
         x = self.m(x)
         return x
 
-    def fc_nodes_calc(self):
+    def fc_nodes_calc(self, config_param):
       new_w = config_param[0][1]
       new_h = config_param[0][2]
       for i in range(conv_layers):
@@ -101,21 +88,8 @@ class cs19b003(nn.Module):
       size = int(config_param[conv_layers][1] * new_w * new_h)
       return size
 
-# y = (len(set([y for x,y in training_data])))
-model = cs19b003(config_param)
-model = model.to(device)
-from torchsummary import summary
-print("model", model)
-
-summary(model, (1,28,28))
-# ouputs <batch_size, num_channels, width, height>
-# out num_channels of a layer = in num_channels of filter
-# FC input = num_channels x width x height
-
-# https://towardsdatascience.com/understanding-input-and-output-shapes-in-convolution-network-keras-f143923d56ca
-
 #train the network
-def train_network(train_loader, optimizer, criteria, e):
+def train_network(train_loader, model1, optimizer, criteria, e):
   """
   train_loader = dataloader created for iterating over data
   optimiser = adam optimiser
@@ -123,7 +97,8 @@ def train_network(train_loader, optimizer, criteria, e):
   e = no of epochs
   """
   for epoch in range(e):  # loop over the dataset multiple times
-    model.train()
+    model1.train()
+    model1.to(device)
     running_loss = 0.0
     for i,data in enumerate(train_loader):
         # get the inputs; data is a list of [inputs, labels]
@@ -135,7 +110,7 @@ def train_network(train_loader, optimizer, criteria, e):
         optimizer.zero_grad()
 
         # forward + backward + optimize
-        outputs = model(inputs)
+        outputs = model1(inputs)
         # print(outputs.shape, labels.shape)
         tmp = torch.nn.functional.one_hot(labels, num_classes = 10)
         loss = criteria(outputs, tmp)
@@ -156,24 +131,6 @@ def loss_fun(y_pred, y_ground):
   v = torch.sum(v)
   return v
 
-# Test for single datapoint
-x,y = training_data[0]
-model = cs19b003(config_param)
-model = model.to(device)
-tensor=torch.rand((1,1,28,28))
-tensor[0]=x
-y_pred = model(tensor.to(device))
-print("y_pred.shape", y_pred.shape)
-print("y_pred", y_pred)
-print("sum y_pred", torch.sum(y_pred))
-#cross_entropy(10,y_pred)
-
-y_ground = y
-loss_val = loss_fun(y_pred, y_ground)
-print(loss_val)
-
-optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-# train_network(train_loader,optimizer,loss_fun,10)
 
 # testing the model
 def test(dataloader, model, loss_fn):
@@ -216,10 +173,7 @@ def test(dataloader, model, loss_fn):
 def get_model(train_loader,e,lr,config_param=None):
   model = cs19b003(config_param)
   model=model.to(device)
-  optimizer = optim.SGD(model.parameters(), lr, momentum=0.9)
-
-  criteria = loss_fun
-  train_network(train_loader, optimizer, criteria, e)
+  
   return model
 
 # test the model in hubconf
