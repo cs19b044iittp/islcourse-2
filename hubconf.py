@@ -215,7 +215,7 @@ test(test_loader, model, loss_fun)
 #write the get model
 def get_model(train_loader=None,e = 10,lr=1e-4,config_param=None):
 	model = cs19b003(config_param)
-        model=model.to(device)
+	model=model.to(device)
 
 	optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 	criteria = loss_fun
