@@ -1,4 +1,8 @@
+
+# ISL Endsem
 # amit kesari
+# cs19b003 - 21/11/22
+
 import torch
 from torch import nn
 import torch.optim as optim
@@ -11,7 +15,7 @@ from matplotlib.colors import ListedColormap
 from sklearn.metrics import confusion_matrix, classification_report, precision_recall_curve, precision_recall_fscore_support
 from sklearn.preprocessing import label_binarize
 from sklearn.cluster import KMeans
-
+from sklearn.metrics.cluster import homogeneity_score, completeness_score, v_measure_score
 
 # You can import whatever standard packages are required
 
@@ -31,17 +35,15 @@ def get_data_blobs(n_points=100):
   # write your code ...
   return X,y
 
-
 def get_data_circles(n_points=100):
   # write your code here
   # Refer to sklearn data sets
   
-  X, y = None
+  # X, y = None
   X,y = make_circles(n_points, noise=0.02, random_state=42)
 
   # write your code ...
   return X,y
-
 
 def get_data_mnist():
   # write your code here
@@ -54,30 +56,31 @@ def get_data_mnist():
   # write your code ...
   return X,y
 
-
 def build_kmeans(X=None,k=10):
   # k is a variable, calling function can give a different number
   # Refer to sklearn KMeans method
 
   # km = None # this is the KMeans object
-  km = KMeans(n_clusters=2, random_state=0).fit(X)
-  
+  km = KMeans(n_clusters=2, n_init = k,random_state=42).fit(X)
+  print("kmeans.labels_ ", km.labels_)
   # write your code ...
   return km
 
 def assign_kmeans(km=None,X=None):
-  pass
   # For each of the points in X, assign one of the means
   # refer to predict() function of the KMeans in sklearn
   # write your code ...
-  ypred = None
+  ypred = km.predict(X)
   return ypred
 
 def compare_clusterings(ypred_1=None,ypred_2=None):
-  pass
   # refer to sklearn documentation for homogeneity, completeness and vscore
-  h,c,v = 0,0,0 # you need to write your code to find proper values
+  # h,c,v = 0,0,0 # you need to write your code to find proper values
+  h = homogeneity_score(ypred_1, ypred_2)
+  c = completeness_score(ypred_1, ypred_2)
+  v = v_measure_score(ypred_1, ypred_2)
   return h,c,v
+
 
 ###### PART 2 ######
 
