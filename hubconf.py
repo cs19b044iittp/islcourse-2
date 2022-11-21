@@ -1,172 +1,200 @@
+# kali
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor
+import torch.optim as optim
 
+# You can import whatever standard packages are required
 
-def kali():
-  print('kali')
+# full sklearn, full pytorch, pandas, matplotlib, numpy are all available
+# Ideally you do not need to pip install any other packages!
+# Avoid pip install requirement on the evaluation program side, if you use above packages and sub-packages of them, then that is fine!
 
-# Define a neural network YOUR ROLL NUMBER (all small letters) should prefix the classname
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Using {device} device")
+###### PART 1 ######
 
-loss_fn = nn.CrossEntropyLoss()
-# optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+def get_data_blobs(n_points=100):
+  pass
+  # write your code here
+  # Refer to sklearn data sets
+  X, y = None
+  # write your code ...
+  return X,y
 
-m1=8
-n1=8
-pic_len1=625
+def get_data_circles(n_points=100):
+  pass
+  # write your code here
+  # Refer to sklearn data sets
+  X, y = None
+  # write your code ...
+  return X,y
 
-loss_function = nn.CrossEntropyLoss()
-class Cs19b003NN(nn.Module):
-  # pass
-  # ... your code ...
-  # ... write init and forward functions appropriately ...
-    def __init__(self, m, n, pic_len):
-        super(Cs19b003NN, self).__init__()
-        self.flatten = nn.Flatten()
-        self.m = m
-        self.n=n
-        self.pic_len=pic_len
-        print("lens:", m, n, pic_len)
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear( pic_len, pic_len),
-            nn.ReLU(),
-            nn.Linear(pic_len, 512),
-            nn.ReLU(),
-            nn.Linear(512, 10)
-            
-        )
-        self.softmax = torch.nn.Softmax()
+def get_data_mnist():
+  pass
+  # write your code here
+  # Refer to sklearn data sets
+  X,y = None
+  # write your code ...
+  return X,y
 
-    def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
+def build_kmeans(X=None,k=10):
+  pass
+  # k is a variable, calling function can give a different number
+  # Refer to sklearn KMeans method
+  km = None # this is the KMeans object
+  # write your code ...
+  return km
 
-def train(dataloader, model, optimizer):
-    size = len(dataloader.dataset)
-    model.train()
-    for batch, (X, y) in enumerate(dataloader):
-        X, y = X.to(device), y.to(device)
+def assign_kmeans(km=None,X=None):
+  pass
+  # For each of the points in X, assign one of the means
+  # refer to predict() function of the KMeans in sklearn
+  # write your code ...
+  ypred = None
+  return ypred
 
-        # Compute prediction error
-        pred = model(X)
-        loss = loss_function(pred, y)
+def compare_clusterings(ypred_1=None,ypred_2=None):
+  pass
+  # refer to sklearn documentation for homogeneity, completeness and vscore
+  h,c,v = 0,0,0 # you need to write your code to find proper values
+  return h,c,v
 
-        # Backpropagation
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+###### PART 2 ######
 
-        if batch % 100 == 0:
-            loss, current = loss.item(), batch * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+def build_lr_model(X=None, y=None):
+  pass
+  lr_model = None
+  # write your code...
+  # Build logistic regression, refer to sklearn
+  return lr_model
 
+def build_rf_model(X=None, y=None):
+  pass
+  rf_model = None
+  # write your code...
+  # Build Random Forest classifier, refer to sklearn
+  return rf_model
 
-def test(dataloader, model):
-    size = len(dataloader.dataset)
-    num_batches = len(dataloader)
-    model.eval()
-    test_loss, correct = 0, 0
-    with torch.no_grad():
-        for X, y in dataloader:
-            X, y = X.to(device), y.to(device)
-            pred = model(X)
-            test_loss += loss_function(pred, y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-    test_loss /= num_batches
-    correct /= size
-    print(
-        f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+def get_metrics(model=None,X=None,y=None):
+  pass
+  # Obtain accuracy, precision, recall, f1score, auc score - refer to sklearn metrics
+  acc, prec, rec, f1, auc = 0,0,0,0,0
+  # write your code here...
+  return acc, prec, rec, f1, auc
 
+def get_paramgrid_lr():
+  # you need to return parameter grid dictionary for use in grid search cv
+  # penalty: l1 or l2
+  lr_param_grid = None
+  # refer to sklearn documentation on grid search and logistic regression
+  # write your code here...
+  return lr_param_grid
 
+def get_paramgrid_rf():
+  # you need to return parameter grid dictionary for use in grid search cv
+  # n_estimators: 1, 10, 100
+  # criterion: gini, entropy
+  # maximum depth: 1, 10, None  
+  rf_param_grid = None
+  # refer to sklearn documentation on grid search and random forest classifier
+  # write your code here...
+  return rf_param_grid
 
-# sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
-def get_model(train_data_loader=None, n_epochs=10):
-  # model = None
-
-  # write your code here as per instructions
-  # ... your code ...
-  # ... your code ...
-  # ... and so on ...
-  # Use softmax and cross entropy loss functions
-  # set model variable to proper object, make use of train_data
-  # with torch.no_grad():
-  for X, y in train_data_loader:
-      X, y = X.to(device), y.to(device)
-      print("X and y shape", X.shape, y.shape)
-      m=X.shape[0]
-      n=X.shape[1]
-      pic_len = X.shape[2]*X.shape[3]
-      break
-  model = Cs19b003NN(m, n, pic_len).to(device)
+def perform_gridsearch_cv_multimetric(model=None, param_grid=None, cv=5, X=None, y=None, metrics=['accuracy','roc_auc']):
   
-  optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-  for t in range(n_epochs):
-        print(f"Epoch {t+1}\n-------------------------------")
-        train(train_data_loader, model, optimizer)
+  # you need to invoke sklearn grid search cv function
+  # refer to sklearn documentation
+  # the cv parameter can change, ie number of folds  
   
-  print ('Returning model... (rollnumber: cs03)', model)
+  # metrics = [] the evaluation program can change what metrics to choose
   
-  return model
+  grid_search_cv = None
+  # create a grid search cv object
+  # fit the object on X and y input above
+  # write your code here...
+  
+  # metric of choice will be asked here, refer to the-scoring-parameter-defining-model-evaluation-rules of sklearn documentation
+  
+  # refer to cv_results_ dictonary
+  # return top 1 score for each of the metrics given, in the order given in metrics=... list
+  
+  top1_scores = []
+  
+  return top1_scores
 
-# sample invocation torch.hub.load(myrepo,'get_model_advanced',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
-def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
-  model = None
+###### PART 3 ######
 
-  # write your code here as per instructions
-  # ... your code ...
-  # ... your code ...
-  # ... and so on ...
-  # Use softmax and cross entropy loss functions
-  # set model variable to proper object, make use of train_data
+class MyNN(nn.Module):
+  def __init__(self,inp_dim=64,hid_dim=13,num_classes=10):
+    super(MyNN,self)
+    
+    self.fc_encoder = None # write your code inp_dim to hid_dim mapper
+    self.fc_decoder = None # write your code hid_dim to inp_dim mapper
+    self.fc_classifier = None # write your code to map hid_dim to num_classes
+    
+    self.relu = None #write your code - relu object
+    self.softmax = None #write your code - softmax object
+    
+  def forward(self,x):
+    x = None # write your code - flatten x
+    x_enc = self.fc_encoder(x)
+    x_enc = self.relu(x_enc)
+    
+    y_pred = self.fc_classifier(x_enc)
+    y_pred = self.softmax(y_pred)
+    
+    x_dec = self.fc_decoder(x_enc)
+    
+    return y_pred, x_dec
   
-  # In addition,
-  # Refer to config dict, where learning rate is given, 
-  # List of (in_channels, out_channels, kernel_size, stride=1, padding='same')  are specified
-  # Example, config = [(1,10,(3,3),1,'same'), (10,3,(5,5),1,'same'), (3,1,(7,7),1,'same')], it can have any number of elements
-  # You need to create 2d convoution layers as per specification above in each element
-  # You need to add a proper fully connected layer as the last layer
-  
-  # HINT: You can print sizes of tensors to get an idea of the size of the fc layer required
-  # HINT: Flatten function can also be used if required
-  
-  
-  print ('Returning model... (rollnumber: cs03)')
-  
-  return model
+  # This a multi component loss function - lc1 for class prediction loss and lc2 for auto-encoding loss
+  def loss_fn(self,x,yground,y_pred,xencdec):
+    
+    # class prediction loss
+    # yground needs to be one hot encoded - write your code
+    lc1 = None # write your code for cross entropy between yground and y_pred, advised to use torch.mean()
+    
+    # auto encoding loss
+    lc2 = torch.mean((x - xencdec)**2)
+    
+    lval = lc1 + lc2
+    
+    return lval
+    
+def get_mynn(inp_dim=64,hid_dim=13,num_classes=10):
+  mynn = MyNN(inp_dim,hid_dim,num_classes)
+  mynn.double()
+  return mynn
 
-# sample invocation torch.hub.load(myrepo,'test_model',model1=model,test_data_loader=test_data_loader,force_reload=True)
-def test_model(model1=None, test_data_loader=None):
+def get_mnist_tensor():
+  # download sklearn mnist
+  # convert to tensor
+  X, y = None, None
+  # write your code
+  return X,y
 
-  accuracy_val, precision_val, recall_val, f1score_val = 0, 0, 0, 0
-  # write your code here as per instructions
-  # ... your code ...
-  # ... your code ...
-  # ... and so on ...
-  # calculate accuracy, precision, recall and f1score
-  size = len(test_data_loader.dataset)
-  num_batches = len(test_data_loader)
-  print("test_data_loader size:", size, " num batch", num_batches)
+def get_loss_on_single_point(mynn=None,x0,y0):
+  y_pred, xencdec = mynn(x0)
+  lossval = mynn.loss_fn(x0,y0,y_pred,xencdec)
+  # the lossval should have grad_fn attribute set
+  return lossval
+
+def train_combined_encdec_predictor(mynn=None,X,y, epochs=11):
+  # X, y are provided as tensor
+  # perform training on the entire data set (no batches etc.)
+  # for each epoch, update weights
   
-  model1.eval()
-  test_loss, correct = 0, 0
+  optimizer = optim.SGD(mynn.parameters(), lr=0.01)
   
-  with torch.no_grad():
-      for X, y in test_data_loader:
-          X, y = X.to(device), y.to(device)
-          print("X and y shape", X.shape, y.shape)
-          
-          pred = model1(X)
-          test_loss += loss_fn(pred, y).item()
-          correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-  test_loss /= num_batches
-  correct /= size
-  print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
-  print ('Returning metrics... (rollnumber: cs03)')
+  for i in range(epochs):
+    optimizer.zero_grad()
+    ypred, Xencdec = mynn(X)
+    lval = mynn.loss_fn(X,y,ypred,Xencdec)
+    lval.backward()
+    optimzer.step()
+    
+  return mynn
+    
+
+
+
+
   
-  
-  return accuracy_val, precision_val, recall_val, f1score_val
