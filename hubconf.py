@@ -31,7 +31,7 @@ def get_data_blobs(n_points=100):
   # Refer to sklearn data sets
 
   # X, y = None
-  X, y = make_blobs(n_samples=n_points, n_features=11)
+  X, y = make_blobs(n_samples=n_points, n_features=2)
   # write your code ...
   return X,y
 
@@ -62,7 +62,7 @@ def build_kmeans(X=None,k=10):
   # Refer to sklearn KMeans method
 
   # km = None # this is the KMeans object
-  km = KMeans(n_clusters=11, n_init = k,random_state=42).fit(X)
+  km = KMeans(n_clusters=2, n_init = k,random_state=42).fit(X)
   print("kmeans.labels_ ", km.labels_)
   # write your code ...
   return km
