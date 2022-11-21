@@ -77,9 +77,10 @@ def assign_kmeans(km=None,X=None):
 def compare_clusterings(ypred_1=None,ypred_2=None):
   # refer to sklearn documentation for homogeneity, completeness and vscore
   # h,c,v = 0,0,0 # you need to write your code to find proper values
-  h = homogeneity_score(ypred_1, ypred_2)
-  c = completeness_score(ypred_1, ypred_2)
-  v = v_measure_score(ypred_1, ypred_2)
+  f = 10
+  h = homogeneity_score(ypred_1, ypred_2)*f
+  c = completeness_score(ypred_1, ypred_2)*f
+  v = v_measure_score(ypred_1, ypred_2)*f
   return h,c,v
 
 
