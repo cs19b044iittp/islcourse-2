@@ -53,11 +53,10 @@ def get_data_circles(n_points=100):
 def get_data_mnist():
   # write your code here
   # Refer to sklearn data sets
-
-  # X,y = None
   digits = load_digits()
-  X, y = digits.data, digits.target
-
+  n_samples = len(digits.images)
+  flatten_img = digits.images.reshape((n_samples, -1))
+  X, y = flatten_img, digits.target
   # write your code ...
   return X,y
 
