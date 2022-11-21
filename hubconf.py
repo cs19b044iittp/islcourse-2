@@ -1,7 +1,17 @@
-# kali
+# amit kesari
 import torch
 from torch import nn
 import torch.optim as optim
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs, make_circles, load_digits
+from sklearn.linear_model import LogisticRegression
+from matplotlib.colors import ListedColormap
+from sklearn.metrics import confusion_matrix, classification_report, precision_recall_curve, precision_recall_fscore_support
+from sklearn.preprocessing import label_binarize
+from sklearn.cluster import KMeans
+
 
 # You can import whatever standard packages are required
 
@@ -12,34 +22,46 @@ import torch.optim as optim
 ###### PART 1 ######
 
 def get_data_blobs(n_points=100):
-  pass
   # write your code here
   # Refer to sklearn data sets
-  X, y = None
+
+  # X, y = None
+  X, y = make_blobs(n_samples=n_points, n_features=2, centers=[[0,0],[0,10],[10,0]])
+
   # write your code ...
   return X,y
+
 
 def get_data_circles(n_points=100):
-  pass
   # write your code here
   # Refer to sklearn data sets
+  
   X, y = None
+  X,y = make_circles(n_points, noise=0.02, random_state=42)
+
   # write your code ...
   return X,y
+
 
 def get_data_mnist():
-  pass
   # write your code here
   # Refer to sklearn data sets
-  X,y = None
+
+  # X,y = None
+  digits = load_digits()
+  X, y = digits.images, digits.target
+
   # write your code ...
   return X,y
 
+
 def build_kmeans(X=None,k=10):
-  pass
   # k is a variable, calling function can give a different number
   # Refer to sklearn KMeans method
-  km = None # this is the KMeans object
+
+  # km = None # this is the KMeans object
+  km = KMeans(n_clusters=2, random_state=0).fit(X)
+  
   # write your code ...
   return km
 
