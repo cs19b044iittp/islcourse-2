@@ -25,22 +25,23 @@ from sklearn.metrics.cluster import homogeneity_score, completeness_score, v_mea
 
 ###### PART 1 ######
 
+
 def get_data_blobs(n_points=100):
   # write your code here
   # Refer to sklearn data sets
 
   # X, y = None
-  X, y = make_blobs(n_samples=n_points, n_features=2, centers=[[0,0],[0,10],[10,0]])
-
+  X, y = make_blobs(n_samples=n_points, n_features=11)
   # write your code ...
   return X,y
+
 
 def get_data_circles(n_points=100):
   # write your code here
   # Refer to sklearn data sets
   
   # X, y = None
-  X,y = make_circles(n_points, noise=0.02, random_state=42)
+  X,y = make_circles(n_points, random_state=42)
 
   # write your code ...
   return X,y
@@ -61,7 +62,7 @@ def build_kmeans(X=None,k=10):
   # Refer to sklearn KMeans method
 
   # km = None # this is the KMeans object
-  km = KMeans(n_clusters=2, n_init = k,random_state=42).fit(X)
+  km = KMeans(n_clusters=11, n_init = k,random_state=42).fit(X)
   print("kmeans.labels_ ", km.labels_)
   # write your code ...
   return km
