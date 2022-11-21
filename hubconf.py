@@ -11,8 +11,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs, make_circles, load_digits
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from matplotlib.colors import ListedColormap
 from sklearn.metrics import confusion_matrix, classification_report, precision_recall_curve, precision_recall_fscore_support
+from sklearn import metrics
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, roc_curve, auc
 from sklearn.preprocessing import label_binarize
 from sklearn.cluster import KMeans
 from sklearn.metrics.cluster import homogeneity_score, completeness_score, v_measure_score
@@ -25,16 +28,16 @@ from sklearn.metrics.cluster import homogeneity_score, completeness_score, v_mea
 
 ###### PART 1 ######
 
-
 def get_data_blobs(n_points=100):
   # write your code here
   # Refer to sklearn data sets
 
   # X, y = None
   X, y = make_blobs(n_samples=n_points, n_features=2)
+  plt.scatter(X[:,0],X[:,1])
+  plt.show()
   # write your code ...
   return X,y
-
 
 def get_data_circles(n_points=100):
   # write your code here
@@ -42,7 +45,8 @@ def get_data_circles(n_points=100):
   
   # X, y = None
   X,y = make_circles(n_points, random_state=42)
-
+  plt.scatter(X[:,0],X[:,1])
+  plt.show()
   # write your code ...
   return X,y
 
@@ -52,7 +56,7 @@ def get_data_mnist():
 
   # X,y = None
   digits = load_digits()
-  X, y = digits.images, digits.target
+  X, y = digits.data, digits.target
 
   # write your code ...
   return X,y
@@ -82,69 +86,101 @@ def compare_clusterings(ypred_1=None,ypred_2=None):
   v = v_measure_score(ypred_1, ypred_2)
   return h,c,v
 
+blob_X, blob_y = get_data_blobs(150)
+circle_X, circle_y = get_data_circles(150)
+digit_X, digit_y = get_data_mnist()
 
-# ###### PART 2 ######
+print("blob_X.shape, blob_y.shape ", blob_X.shape, blob_y.shape)
+print("circle_X.shape, circle_y.shape ", circle_X.shape, circle_y.shape)
+print("digit_X.shape, digit_y.shape ", digit_X.shape, digit_y.shape)
 
-# def build_lr_model(X=None, y=None):
-#   pass
-#   lr_model = None
-#   # write your code...
-#   # Build logistic regression, refer to sklearn
-#   return lr_model
+X = blob_X
+km = build_kmeans(blob_X,11)
+ypred1 = assign_kmeans(km,blob_X)
+km = build_kmeans(circle_X,11)
+ypred2 = assign_kmeans(km,circle_X)
 
-# def build_rf_model(X=None, y=None):
-#   pass
-#   rf_model = None
-#   # write your code...
-#   # Build Random Forest classifier, refer to sklearn
-#   return rf_model
+h,c,v = compare_clusterings(ypred1, ypred2)
+print(h, c,v)
 
-# def get_metrics(model=None,X=None,y=None):
-#   pass
-#   # Obtain accuracy, precision, recall, f1score, auc score - refer to sklearn metrics
-#   acc, prec, rec, f1, auc = 0,0,0,0,0
-#   # write your code here...
-#   return acc, prec, rec, f1, auc
 
-# def get_paramgrid_lr():
-#   # you need to return parameter grid dictionary for use in grid search cv
-#   # penalty: l1 or l2
-#   lr_param_grid = None
-#   # refer to sklearn documentation on grid search and logistic regression
-#   # write your code here...
-#   return lr_param_grid
 
-# def get_paramgrid_rf():
-#   # you need to return parameter grid dictionary for use in grid search cv
-#   # n_estimators: 1, 10, 100
-#   # criterion: gini, entropy
-#   # maximum depth: 1, 10, None  
-#   rf_param_grid = None
-#   # refer to sklearn documentation on grid search and random forest classifier
-#   # write your code here...
-#   return rf_param_grid
+"""# PART 2"""
 
-# def perform_gridsearch_cv_multimetric(model=None, param_grid=None, cv=5, X=None, y=None, metrics=['accuracy','roc_auc']):
+###### PART 2 ######
+
+def build_lr_model(X=None, y=None):
+  # lr_model = None
+  lr_model = LogisticRegression(fit_intercept=False, random_state=42).fit(X,y)
   
-#   # you need to invoke sklearn grid search cv function
-#   # refer to sklearn documentation
-#   # the cv parameter can change, ie number of folds  
+  # write your code...
+  # Build logistic regression, refer to sklearn
+  return lr_model
+
+def build_rf_model(X=None, y=None):
+  # rf_model = None
+  rf_model = RandomForestClassifier(max_depth=20, random_state=42).fit(X, y)
+  # write your code...
+  # Build Random Forest classifier, refer to sklearn
+  return rf_model
+
+def get_metrics(model=None,X=None,y=None):
+  # Obtain accuracy, precision, recall, f1score, auc score - refer to sklearn metrics
+
+  # acc, prec, rec, f1, auc = 0,0,0,0,0
+  y_pred = model.predict(X)
+  print("y.shape, y_pred.shape: ", y.shape, y_pred.shape)
+
+  acc = accuracy_score(y, y_pred)
+  prec = precision_score(y, y_pred, average='macro')
+  rec = recall_score(y, y_pred, average='macro')
+  f1 = f1_score(y, y_pred, average='macro')
+  fpr, tpr, thresholds = roc_curve(y, y_pred, pos_label=2)
+  auc = metrics.auc(fpr, tpr)
+
+  # write your code here...
+  return acc, prec, rec, f1, auc
+
+def get_paramgrid_lr():
+  # you need to return parameter grid dictionary for use in grid search cv
+  # penalty: l1 or l2
+  lr_param_grid = None
+  # refer to sklearn documentation on grid search and logistic regression
+  # write your code here...
+  return lr_param_grid
+
+def get_paramgrid_rf():
+  # you need to return parameter grid dictionary for use in grid search cv
+  # n_estimators: 1, 10, 100
+  # criterion: gini, entropy
+  # maximum depth: 1, 10, None  
+  rf_param_grid = None
+  # refer to sklearn documentation on grid search and random forest classifier
+  # write your code here...
+  return rf_param_grid
+
+def perform_gridsearch_cv_multimetric(model=None, param_grid=None, cv=5, X=None, y=None, metrics=['accuracy','roc_auc']):
   
-#   # metrics = [] the evaluation program can change what metrics to choose
+  # you need to invoke sklearn grid search cv function
+  # refer to sklearn documentation
+  # the cv parameter can change, ie number of folds  
   
-#   grid_search_cv = None
-#   # create a grid search cv object
-#   # fit the object on X and y input above
-#   # write your code here...
+  # metrics = [] the evaluation program can change what metrics to choose
   
-#   # metric of choice will be asked here, refer to the-scoring-parameter-defining-model-evaluation-rules of sklearn documentation
+  grid_search_cv = None
+  # create a grid search cv object
+  # fit the object on X and y input above
+  # write your code here...
   
-#   # refer to cv_results_ dictonary
-#   # return top 1 score for each of the metrics given, in the order given in metrics=... list
+  # metric of choice will be asked here, refer to the-scoring-parameter-defining-model-evaluation-rules of sklearn documentation
   
-#   top1_scores = []
+  # refer to cv_results_ dictonary
+  # return top 1 score for each of the metrics given, in the order given in metrics=... list
   
-#   return top1_scores
+  top1_scores = []
+  
+  return top1_scores
+
 
 # ###### PART 3 ######
 
